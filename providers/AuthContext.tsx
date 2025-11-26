@@ -1,5 +1,5 @@
 "use client"
-import api, { setTokenGetter } from "@/utils/api"
+import api, { setTokenGetter, setTokenUpdater, setLogoutCallback } from "@/utils/api"
 import { useRouter, usePathname } from "next/navigation"
 import { createContext, useContext, useEffect, useState } from "react"
 import { toast } from "react-toastify"
@@ -60,6 +60,12 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
 
     useEffect(() => {
         setTokenGetter(() => accessToken);
+        setTokenUpdater((token: string) => {
+            setAccessToken(token);
+        });
+        setLogoutCallback(() => {
+            logout();
+        });
     }, [accessToken]);
 
     useEffect(() => {
@@ -114,12 +120,12 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
                 setIsLoading(false)
             }
         }
-        if (accessToken) {
+        if (accessToken && !user) {
             fetchUser()
-        } else {
+        } else if (user) {
             setIsLoading(false)
         }
-    }, [accessToken, pathname])
+    }, [accessToken, pathname, user])
 
     return (
         <AuthContext.Provider value={{ accessToken, user, setAccessToken, logout }}>
