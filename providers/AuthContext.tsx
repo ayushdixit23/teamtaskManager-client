@@ -35,7 +35,6 @@ export function useAuthContext() {
     return context
 }
 
-
 export default function AuthProvider({ children }: { children: React.ReactNode } & React.PropsWithChildren) {
     const [accessToken, setAccessToken] = useState('')
     const [user, setUser] = useState<User | null>(null)
