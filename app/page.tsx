@@ -2,16 +2,22 @@
 import { useAuthContext } from "@/providers/AuthContext";
 
 export default function Home() {
-  const { logout } = useAuthContext();
+  const { logout, user } = useAuthContext();
   return (
     <>
-      <button
-        onClick={() => {
-          logout();
-        }}
-      >
-        Logout
-      </button>
+      {user ? (
+        <div>
+          <h1>Welcome {user.name}</h1>
+        </div>
+      ) : (
+        <button
+          onClick={() => {
+            logout();
+          }}
+        >
+          Logout
+        </button>
+      )}
     </>
   );
 }

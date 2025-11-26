@@ -1,7 +1,7 @@
 "use client"
-import api from "@/utils/api"
+import api, { setTokenGetter } from "@/utils/api"
 import { useRouter } from "next/navigation"
-import { createContext, useContext, useState } from "react"
+import { createContext, useContext, useEffect, useState } from "react"
 import { toast } from "react-toastify"
 
 interface User {
@@ -54,7 +54,23 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
         }
     }
 
-    console.log(accessToken, 'accessToken')
+    useEffect(() => {
+        setTokenGetter(() => accessToken);
+    }, [accessToken]);
+
+    useEffect(() => {
+        const fetchUser = async () => {
+            const response = await api.get('/users/me')
+            if (response.data.success) {
+                setUser(response.data.data as User || null)
+            } else {
+                toast.error(response.data.message || 'Failed to fetch user')
+            }
+        }
+        if (accessToken) {
+            fetchUser()
+        }
+    }, [accessToken])
 
     return (
         <AuthContext.Provider value={{ accessToken, user, setAccessToken, logout }}>

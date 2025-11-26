@@ -9,15 +9,15 @@ const api = axios.create({
     withCredentials: true,
 });
 
-const getToken = () => {
-    const token = ""
-    return token;
-}
+let tokenGetter: (() => string) | null = null;
+
+export const setTokenGetter = (getter: () => string) => {
+    tokenGetter = getter;
+};
 
 api.interceptors.request.use((config) => {
-    const token = getToken();
-    if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
+    if (tokenGetter) {
+        config.headers.Authorization = `Bearer ${tokenGetter?.()}`;
     }
     return config;
 })
