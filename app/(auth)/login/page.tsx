@@ -8,6 +8,7 @@ import Link from 'next/link';
 import { toast } from 'react-toastify';
 import api from '@/utils/api';
 import { useRouter } from 'next/navigation';
+import { useAuthContext } from '@/providers/AuthContext';
 
 const loginSchema = z.object({
     email: z.string().email('Invalid email address').min(1, 'Email is required'),
@@ -21,6 +22,7 @@ const page = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
+    const { setAccessToken } = useAuthContext();
     const {
         register,
         handleSubmit,
@@ -37,6 +39,7 @@ const page = () => {
             setIsLoading(true);
             const response = await api.post("/auth/login", data);
             if (response.data.success) {
+                setAccessToken(response.data.data.token);
                 toast.success(response.data.message || "Login successful");
                 router.push("/");
             } else {

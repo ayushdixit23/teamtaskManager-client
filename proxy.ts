@@ -25,8 +25,7 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL(DEFAULT_REDIRECT_PATH, request.url));
   }
   
-  // If user is not authenticated and trying to access protected routes, redirect to login
-  // Note: Currently all non-auth pages are considered protected
+  // If user is not authenticated and trying to access protected routes, redirect to logins
   if (!isAuthenticated && !isAuthPage) {
     return NextResponse.redirect(new URL(DEFAULT_RESTRICTED_REDIRECT_PATH, request.url));
   }
