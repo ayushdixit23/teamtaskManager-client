@@ -8,6 +8,7 @@ import Link from 'next/link';
 import { toast } from 'react-toastify';
 import api from '@/utils/api';
 import { useRouter } from 'next/navigation';
+import axios from 'axios';
 
 const loginSchema = z.object({
     email: z.string().email('Invalid email address').min(1, 'Email is required'),
@@ -35,7 +36,9 @@ const page = () => {
     const onSubmit = async (data: LoginFormData) => {
         try {
             setIsLoading(true);
-            const response = await api.post("/auth/login", data);
+            const response = await axios.post(`${process.env.NEXT_PUBLIC_API_BASE_URL}/auth/login`, data,{
+                withCredentials: true,
+            });
             if (response.data.success) {
                 toast.success(response.data.message || "Login successful");
                 router.push("/");
